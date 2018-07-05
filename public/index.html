@@ -35,16 +35,24 @@
             tosUrl: '/'
           };
 
-          // Initialize the FirebaseUI Widget using Firebase.
-          var ui = new firebaseui.auth.AuthUI(firebase.auth());
-          // The start method will wait until the DOM is loaded.
-          ui.start('#firebaseui-auth-container', uiConfig);
+          firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+              console.log(user);
+              document.getElementById('userData').innerHTML = 'Hola ' + user.displayName + ' <a href="#" onClick="firebase.auth().signOut()">Cerrar sesion</a>';
+            } else {
+              document.getElementById('userData').innerHTML = '';
+              // Initialize the FirebaseUI Widget using Firebase.
+              var ui = new firebaseui.auth.AuthUI(firebase.auth());
+              // The start method will wait until the DOM is loaded.
+              ui.start('#firebaseui-auth-container', uiConfig);
+            }
+          });
         } catch (e) {
           console.error(e);
         }
       });
     </script>
-
     <div id="firebaseui-auth-container"></div>
+    <div id="userData"></div>
   </body>
 </html>
