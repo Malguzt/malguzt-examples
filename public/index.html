@@ -18,6 +18,8 @@
     <script src="https://cdn.firebase.com/libs/firebaseui/3.1.1/firebaseui.js"></script>
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.1.1/firebaseui.css" />
 
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script src="js/adsConf.js"></script>
   </head>
   <body>
     <script>
@@ -29,6 +31,7 @@
             signInOptions: [
               // Leave the lines as is for the providers you want to offer your users.
               firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+              firebase.auth.FacebookAuthProvider.PROVIDER_ID,
               firebase.auth.EmailAuthProvider.PROVIDER_ID
             ],
             // Terms of service url.
