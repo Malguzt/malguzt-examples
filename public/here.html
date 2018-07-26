@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="initial-scale=1.0,
+  width=device-width" />
+  <script src="https://js.api.here.com/v3/3.0/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
+  <script src="https://js.api.here.com/v3/3.0/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
+  <script src="https://js.api.here.com/v3/3.0/mapsjs-places.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>
+  <input id="searchInput">
+  <button id="searchBtn">Buscar</button>
+  <div style="width: 640px; height: 480px" id="mapContainer"></div>
+  <script>
+    var platform = new H.service.Platform({
+      'app_id': 'pYsA1p0bJ1xVjs23V1dD',
+      'app_code': 'shxUPe1YTAlHiws3TJ8AEA',
+      useCIT: true,
+      useHTTPS: true
+    });
+    var maptypes = platform.createDefaultLayers();
+    let currentPosition;
+    let map = null;
+    let markers = [];
+    navigator.geolocation.getCurrentPosition((position) => {
+      currentPosition = position;
+      map = new H.Map(
+        document.getElementById('mapContainer'),
+        maptypes.normal.map, {
+          zoom: 10,
+          center: {
+            lng: position.coords.longitude,
+            lat: position.coords.latitude
+          }
+        });
+
+    });
+
+    var search = new H.places.Search(platform.getPlacesService()),
+      searchResult, error;
+
+    document.getElementById("searchBtn").addEventListener('click', () => {
+      // Define search parameters:
+      var params = {
+        // Plain text search for places with the word "hotel"
+        // associated with them:
+        'q': document.getElementById('searchInput').value,
+        //  Search in the Chinatown district in San Francisco:
+        'at': `${currentPosition.coords.latitude},${currentPosition.coords.longitude}`
+      };
+
+      // Define a callback function to handle data on success:
+      function onResult(data) {
+        searchResult = data;
+        map.removeObjects(markers);
+        markers = [];
+        searchResult.results.items.forEach((item) => {
+          // Create an icon, an object holding the latitude and longitude, and a marker:
+          var icon = new H.map.Icon('img/resto.png')
+          coords = {
+              lng: item.position[1],
+              lat: item.position[0]
+            },
+            marker = new H.map.Marker(coords, {
+              icon: icon
+            });
+
+          markers.push(marker);
+          map.addObject(marker);
+          map.setCenter(coords);
+        })
+      }
+
+      // Define a callback function to handle errors:
+      function onError(data) {
+        error = data;
+      }
+
+      // Run a search request with parameters, headers (empty), and
+      // callback functions:
+      search.request(params, {}, onResult, onError);
+    })
+  </script>
+</body>
+
+</html>
